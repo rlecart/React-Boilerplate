@@ -1,17 +1,34 @@
+import '../style/App.css'
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+import { Provider } from 'react-redux';
+import { combineReducers } from 'redux';
+
+import NotFound from './components/NotFound';
+import HomeContainer from './containers/HomeContainer';
+
+import {
+  Route,
+  Switch
+} from 'react-router-dom';
+
+import socketReducer from './reducers/socketReducer.js';
+import homeReducer from "./reducers/homeReducer.js";
+import configureStore from './middleware/configureStore.js';
+
+const Store = configureStore(combineReducers({
+  socketReducer,
+  homeReducer,
+}, undefined, {}));
+
+const Root = () => (
+  <Provider store={Store}>
+    <Switch>
+      <Route exact path='/' component={HomeContainer} />
+      <Route component={NotFound} />
+    </Switch>
+  </Provider>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+ReactDOM.render(<Root />, document.getElementById('root'));
